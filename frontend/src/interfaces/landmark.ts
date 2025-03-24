@@ -1,6 +1,6 @@
 export enum Status{
-  Planning = "planning",
-  Complete = "complete"
+  Planning = "В планах",
+  Complete = "Осмотрена"
 }
 
 export interface Coordinates{
@@ -8,15 +8,15 @@ export interface Coordinates{
   longitude: number
 }
 
-export interface Landmark {
+export interface ILandmark {
   id: number,
   name: string,
   description: string,
-  createdAt : Date,
+  createdAt : string,
   rating: 1 | 2 | 3 | 4 | 5,
   image: string,
   location: string,
-  coordinates: Coordinates,
+  coordinates: string,
   mapsLink: string,
-  status: Status
+  status: string
 }
