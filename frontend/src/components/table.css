@@ -1,8 +1,14 @@
 
- 
+.table{
+    min-width: 1400px;
+}
+
+.g-table__table_width_auto{
+    min-width: 1400px;
+}
 
 .description-cell {
     word-break: break-all;
-    max-width: 300px; /* Настройте ширину по необходимости */
+    max-width: 280px;
 }
 

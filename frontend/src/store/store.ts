@@ -1,4 +1,4 @@
-import {makeAutoObservable} from "mobx";
+import {autorun, makeAutoObservable} from "mobx";
 import {ILandmark} from "../interfaces/landmark.ts";
 
 
@@ -16,7 +16,7 @@ class Store{
     this.count = count
   }
 
-  setSearchQuery(searchQuery:string, data:Array<ILandmark>) {
+  searchLandmarks(searchQuery:string, data:Array<ILandmark>) {
     this.searchQuery = searchQuery
     this.filteredData = data.filter((item) => {
       const query = this.searchQuery.toLowerCase();
@@ -26,6 +26,14 @@ class Store{
       );
     })
   }
+
+  deleteLandmark = (id: number)=> {
+    this.filteredData = this.filteredData.filter((item) => item.id !== id );
+  }
 }
 
 export const store:Store = new Store();
+
+autorun(() => {
+  console.log(store.filteredData)
+})
