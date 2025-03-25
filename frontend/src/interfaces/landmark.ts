@@ -1,13 +1,3 @@
-export enum Status{
-  Planning = "В планах",
-  Complete = "Осмотрена"
-}
-
-export interface Coordinates{
-  latitude: number,
-  longitude: number
-}
-
 export interface ILandmark {
   id: number,
   name: string,
@@ -18,5 +8,5 @@ export interface ILandmark {
   location: string,
   coordinates: string,
   mapsLink: string,
-  status: string
+  status: 'В планах' | 'Осмотрена'
 }

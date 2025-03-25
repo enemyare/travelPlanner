@@ -1,4 +1,4 @@
-import {Table, TextInput, withTableSorting, withTableActions} from '@gravity-ui/uikit';
+import {Table, TextInput, withTableSorting, withTableActions, Icon, Button} from '@gravity-ui/uikit';
 import '@gravity-ui/uikit/styles/fonts.css';
 import '@gravity-ui/uikit/styles/styles.css';
 import './table.css';
@@ -6,6 +6,7 @@ import {FC, useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import {store} from "../store/store.ts";
 import {ILandmark} from "../interfaces/landmark.ts";
+import {Eye, Pencil, TrashBin } from '@gravity-ui/icons';
 
 const TableWithSorting = withTableSorting(Table);
 const MyTable = withTableActions(TableWithSorting);
@@ -131,21 +132,24 @@ const columns = [
 const LandmarksTable: FC = observer(() => {
   useEffect(()=>{
     store.setCount(landmarks.length)
-    store.filteredData = landmarks
+    store.filteredLandmarks = landmarks
   }, [landmarks.length])
 
   const getRowActions = () => {
     return [
       {
         text: 'Редактировать',
+        icon: <Icon data={Pencil} size={16} />,
         handler: () => {},
       },
       {
         text: 'Просмотр',
+        icon: <Icon data={Eye} size={16} />,
         handler: () => {},
       },
       {
         text: 'Удалить',
+        icon: <Icon data={TrashBin} size={16} />,
         handler: (item:any) => {store.deleteLandmark(item.id)},
       },
     ];
@@ -153,14 +157,25 @@ const LandmarksTable: FC = observer(() => {
 
   return (
     <>
-      <TextInput
-        value={store.searchQuery}
-        onChange={(e) => store.searchLandmarks(e.target.value, landmarks)}
-        placeholder="Поиск по названию или описанию"
-        style={{ marginBottom: '16px' }}
-      />
+      <div className="search-container">
+        <TextInput
+          value={store.searchQuery}
+          onChange={(e) => store.searchLandmarks(e.target.value, landmarks)}
+          placeholder="Поиск по названию или описанию"
+          style={{ marginBottom: '16px' }}
+        />
+        <Button
+          view={"action"}
+          onClick={() => store.hideViewed()}
+          className={"hide-btn"}
+        >
+          {
+            store.isHideViewed ? "Показать все": " Скрыть осмотренные"
+          }
+        </Button>
+      </div>
       <MyTable
-        data={store.filteredData}
+        data={store.filteredLandmarks}
         columns={columns}
         getRowActions={getRowActions}
         rowActionsSize = {'l'}
