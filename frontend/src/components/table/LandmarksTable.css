@@ -22,3 +22,8 @@
     min-width: 150px;
 }
 
+.table-img{
+    max-width: 100px;
+    height: auto;
+    borderRadius: '4px'
+}

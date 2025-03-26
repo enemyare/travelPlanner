@@ -1,5 +1,5 @@
 import './App.css'
-import LandmarksTable from "./components/Table.component.tsx";
+import LandmarksTable from "./components/table/LandmarksTable.tsx";
 import {observer} from "mobx-react-lite";
 import {store} from "./store/store.ts";
 

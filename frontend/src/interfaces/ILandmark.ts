@@ -3,7 +3,7 @@ export interface ILandmark {
   name: string,
   description: string,
   createdAt : string,
-  rating: 1 | 2 | 3 | 4 | 5,
+  rating:  number | [number, number],
   image: string,
   location: string,
   coordinates: string,
