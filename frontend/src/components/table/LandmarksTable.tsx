@@ -15,7 +15,8 @@ import {FC} from "react";
 import {observer} from "mobx-react-lite";
 import {store} from "../../store/store.ts";
 import {Eye, Pencil, TrashBin } from '@gravity-ui/icons';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {ILandmark} from "../../interfaces/ILandmark.ts";
 
 const TableWithSorting = withTableSorting(Table);
 const MyTable = withTableActions(TableWithSorting);
@@ -58,6 +59,7 @@ const columns: TableColumnConfig<TableDataItem>[] = [
       <img
         className={'table-img'}
         src={item.image}
+        alt={''}
       />:
         <span>Отсутствует</span>
     ),
@@ -87,6 +89,7 @@ const columns: TableColumnConfig<TableDataItem>[] = [
 
 
 const LandmarksTable: FC = observer(() => {
+  const navigate = useNavigate()
 
   const getRowActions = () => {
     return [
@@ -96,14 +99,18 @@ const LandmarksTable: FC = observer(() => {
         handler: () => {},
       },
       {
-        text: 'Просмотр',
+        text: 'Осмотрел',
         icon: <Icon data={Eye} size={16} />,
-        handler: () => {},
+        handler: (item:ILandmark) => {
+          store.setViewedLandmark(item.id)
+        },
       },
       {
         text: 'Удалить',
         icon: <Icon data={TrashBin} size={16} />,
-        handler: (item:any) => {store.deleteLandmark(item.id)},
+        handler: (item:ILandmark) => {
+          store.deleteLandmark(item.id)
+        },
       },
     ];
   };
@@ -139,6 +146,9 @@ const LandmarksTable: FC = observer(() => {
         rowActionsSize = {'l'}
         emptyMessage="Достопримечательности не найдены"
         className={"table"}
+        onRowClick={(item) => {
+          navigate(`/landmark/${item.id}`);
+        }}
       />
     </>
 

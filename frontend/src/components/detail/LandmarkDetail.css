@@ -1,0 +1,27 @@
+.landmark-detail{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 700px;
+}
+
+.description-wrap{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.landmark-detail-img{
+    max-width: 250px;
+    height: 250px;
+}
+
+.description-container{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
+.description{
+    display: flex;
+    flex-direction: column;
+}

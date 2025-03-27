@@ -1,6 +1,7 @@
 import {createBrowserRouter} from "react-router-dom";
 import {App} from "./App.tsx";
-import LandmarksForm from "./components/LandmarksForm.tsx";
+import LandmarkForm from "./components/form/LandmarkForm.tsx";
+import LandmarkDetail from "./components/detail/LandmarkDetail.tsx";
 
 
 export const router = createBrowserRouter([
@@ -10,6 +11,10 @@ export const router = createBrowserRouter([
   },
   {
     path: '/newlandmark',
-    element: <LandmarksForm/>
+    element: <LandmarkForm/>
+  },
+  {
+    path: '/landmark/:id',
+    element: <LandmarkDetail/>
   }
 ])

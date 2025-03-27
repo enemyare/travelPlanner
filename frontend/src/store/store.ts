@@ -3,6 +3,7 @@ import {ILandmark} from "../interfaces/ILandmark.ts";
 
 
 class Store{
+  detailId: number = NaN
   searchQuery: string = ''
   isHideViewed: boolean = false;
   copyLandmarks: Array<ILandmark> = [];
@@ -33,7 +34,7 @@ class Store{
     {
       id: 3,
       name: 'Статуя Свободы',
-      description: 'Символ свободы и демократии в Нью-Йорке. dsdadasdasdasdsadasdasdasdasdadasdasdasdasdasdasdassdasdasdssad',
+      description: 'Символ свободы и демократии в Нью-Йорке.',
       rating: 3,
       status: 'В планах',
       createdAt : '21.03.25, 00:43',
@@ -49,12 +50,16 @@ class Store{
 
   }
 
-  upCount(){
+  upCount = ()=>{
     this.count++
   }
 
-  setSearchQuery(query:string){
+  setSearchQuery = (query:string)=> {
     this.searchQuery = query
+  }
+
+  setDetailId = (id: number)=> {
+    this.detailId = id;
   }
 
    get searchLandmarks( ) {
@@ -69,7 +74,10 @@ class Store{
       }
       return true
     })
+  }
 
+  get detailLandmark () {
+    return this.landmarks.find((landmark: ILandmark) => landmark.id === this.detailId)
   }
 
   hideViewedLandmarks = () => {
@@ -83,7 +91,22 @@ class Store{
     }
   }
 
-  newLandMarks = (data: ILandmark)=>{
+  setViewedLandmark = (id: number) => {
+    const index = this.landmarks.findIndex(landmark => landmark.id === id);
+    if (index !== -1) {
+      const updatedLandmark = {
+        ...this.landmarks[index],
+        status: 'Осмотрена'
+      };
+      this.landmarks = [
+        ...this.landmarks.slice(0, index),
+        updatedLandmark,
+        ...this.landmarks.slice(index + 1)
+      ];
+    }
+  }
+
+  newLandmark = (data: ILandmark)=>{
     const id = this.landmarks.length+1
     const mapsLink = `https://maps.google.com/?q=${data.coordinates}`
     const newItem = {
@@ -99,13 +122,13 @@ class Store{
       mapsLink: mapsLink,
       status: 'В планах'
     }
-    console.log(newItem.mapsLink)
     this.upCount()
     this.landmarks.push(<ILandmark>newItem)
   }
 
   deleteLandmark = (id: number)=> {
     this.landmarks = this.landmarks.filter((item) => item.id !== id )
+    this.count--
   }
 
 }

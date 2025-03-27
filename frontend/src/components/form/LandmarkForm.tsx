@@ -1,13 +1,14 @@
 import {FC} from "react";
 import {useForm} from "react-hook-form";
-import {ILandmark} from "../interfaces/ILandmark.ts";
+import {ILandmark} from "../../interfaces/ILandmark.ts";
 import {Button, Slider, TextArea, TextInput} from "@gravity-ui/uikit";
-import {store} from "../store/store.ts";
+import {store} from "../../store/store.ts";
 import {observer} from "mobx-react-lite";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import './LandmarkForm.css'
 
-
-const LandmarksForm: FC = observer(() => {
+const LandmarkForm: FC = observer(() => {
+  const navigate = useNavigate();
   const {register, handleSubmit,setValue} = useForm<ILandmark>({
     defaultValues:{
       name: '',
@@ -18,13 +19,18 @@ const LandmarksForm: FC = observer(() => {
     }
   })
   const onSubmit = (data: ILandmark) => {
-    store.newLandMarks(data)
+    store.newLandmark(data)
+    navigate('/')
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div style={{marginBottom: '16px'}}>
+      <form onSubmit={handleSubmit(onSubmit)} className={'form-container'}>
+        <div className={'form-header'}>
+          <Button view={'outlined-info'}>Редактировать</Button>
+          <Link  to={'/'} className={'form-link'}>Вернуться</Link>
+        </div>
+        <div>
           <label htmlFor='name'>Имя достопримечательности:</label>
           <TextInput
             id={'name'}
@@ -77,14 +83,14 @@ const LandmarksForm: FC = observer(() => {
 
         <Button
           type={'submit'}
+          view={'outlined-action'}
           width={'max'}
         >
           Добавить
         </Button>
-        <Link  to={'/'}>Вернуться</Link>
       </form>
     </>
   )
 })
 
-export default LandmarksForm
+export default LandmarkForm
