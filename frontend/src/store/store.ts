@@ -94,7 +94,7 @@ class Store{
   setViewedLandmark = (id: number) => {
     const index = this.landmarks.findIndex(landmark => landmark.id === id);
     if (index !== -1) {
-      const updatedLandmark = {
+      const updatedLandmark: ILandmark = {
         ...this.landmarks[index],
         status: 'Осмотрена'
       };

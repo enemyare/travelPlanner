@@ -1,11 +1,13 @@
 import {FC} from "react";
 import {useForm} from "react-hook-form";
 import {ILandmark} from "../../interfaces/ILandmark.ts";
-import {Button, Slider, TextArea, TextInput} from "@gravity-ui/uikit";
+import {Button, Slider, Text, TextArea, TextInput} from "@gravity-ui/uikit";
 import {store} from "../../store/store.ts";
 import {observer} from "mobx-react-lite";
 import {Link, useNavigate} from "react-router-dom";
 import './LandmarkForm.css'
+import {ArrowLeft} from "@gravity-ui/icons";
+import {Icon} from "@gravity-ui/uikit";
 
 const LandmarkForm: FC = observer(() => {
   const navigate = useNavigate();
@@ -26,12 +28,9 @@ const LandmarkForm: FC = observer(() => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className={'form-container'}>
-        <div className={'form-header'}>
-          <Button view={'outlined-info'}>Редактировать</Button>
-          <Link  to={'/'} className={'form-link'}>Вернуться</Link>
-        </div>
+          <Link to={'/'} className={'form-link'}><Icon data={ArrowLeft}/>Вернуться</Link>
         <div>
-          <label htmlFor='name'>Имя достопримечательности:</label>
+          <Text variant={'subheader-2'}>Имя достопримечательности:</Text>
           <TextInput
             id={'name'}
             {...register('name')}
@@ -40,17 +39,15 @@ const LandmarkForm: FC = observer(() => {
           />
         </div>
         <div>
-          <label htmlFor='description'>Описание достопримечательности:</label>
+          <Text variant={'subheader-2'}>Описание достопримечательности:</Text>
           <TextArea
-            id={'description'}
             placeholder={'Введите описание'}
             {...register('description')}
           />
         </div>
         <div>
-          <label htmlFor='rating'>Оценка достопримечательности:</label>
+          <Text variant={'subheader-2'}>Оценка достопримечательности:</Text>
           <Slider
-            id={'rating'}
             {...register('rating')}
             min={1}
             max={5}
@@ -60,21 +57,21 @@ const LandmarkForm: FC = observer(() => {
           />
         </div>
         <div>
-          <label htmlFor='description'>Фото:</label>
+          <Text variant={'subheader-2'}>Фото:</Text>
           <TextInput
             {...register('image')}
             placeholder={'Введите ссылку на фотографию'}
           />
         </div>
         <div>
-          <label htmlFor='description'>Локация:</label>
+          <Text variant={'subheader-2'}>Локация:</Text>
           <TextInput
             {...register('location')}
             placeholder={'Введите локацию'}
           />
         </div>
         <div>
-          <label htmlFor='description'>Введите координаты в формате 00.0000, 00.0000:</label>
+          <Text variant={'subheader-2'}>Введите координаты в формате 00.0000, 00.0000:</Text>
           <TextInput
             {...register('coordinates')}
             placeholder={'Ведите координаты'}

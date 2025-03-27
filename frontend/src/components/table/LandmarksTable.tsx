@@ -130,7 +130,7 @@ const LandmarksTable: FC = observer(() => {
         </Button>
 
         <Button
-          view={"action"}
+          view={"outlined-action"}
           onClick={() => store.hideViewedLandmarks()}
           className={"hide-btn"}
         >

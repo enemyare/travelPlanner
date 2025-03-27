@@ -5,13 +5,9 @@
 }
 
 .form-link{
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
     text-align: center;
 }
 
-.form-header{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-
-}

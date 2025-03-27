@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Landmark {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  rating      Int      @default(1)
+  status      String
+  createAt    DateTime
+  location    String
+  coordinates String
+  image       String
+  mapsLink    String
+}
