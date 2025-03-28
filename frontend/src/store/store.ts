@@ -1,12 +1,20 @@
 import {autorun, makeAutoObservable} from "mobx";
 import {ILandmark} from "../interfaces/ILandmark.ts";
 
+type editFormType = {
+  isEdit: boolean,
+  id: number
+}
 
 class Store{
   detailId: number = NaN
   searchQuery: string = ''
-  isHideViewed: boolean = false;
-  isAdmin: boolean = false;
+  isHideViewed: boolean = false
+  isAdmin: boolean = false
+  isEditFormMode: editFormType = {
+    isEdit: false,
+    id: 0,
+  }
   copyLandmarks: Array<ILandmark> = [];
   landmarks: Array<ILandmark> = [{
     id: 1,
@@ -51,6 +59,10 @@ class Store{
 
   }
 
+  landmarkById(id: number){
+    return this.landmarks.find(item => item.id === id);
+  }
+
   upCount = ()=>{
     this.count++
   }
@@ -63,6 +75,13 @@ class Store{
     this.detailId = id;
   }
 
+  setIsEditFormMode = (id: number, isEdit: boolean) => {
+    this.isEditFormMode = {
+      id: id,
+      isEdit: isEdit,
+    }
+  }
+
   setLandmarks = (data: ILandmark[]) => {
     this.landmarks = [...data]
   }
@@ -70,7 +89,6 @@ class Store{
   setIsAdmin = (checked: boolean) => {
     this.isAdmin = checked;
   }
-
 
    get searchLandmarks( ) {
     return this.landmarks
@@ -134,6 +152,25 @@ class Store{
     }
     this.upCount()
     this.landmarks.push(<ILandmark>newItem)
+  }
+
+  updateLandmark = (data: ILandmark, id: number) => {
+    const index = this.landmarks.findIndex(item => item.id === id)
+    const mapsLink = `https://maps.google.com/?q=${data.coordinates}`
+    if (index !== -1) {
+      this.landmarks[index] = {...data,
+        id,
+        createdAt: new Date().toLocaleDateString('ru-RU', {
+          hour: 'numeric',
+          minute: 'numeric',
+          year: '2-digit',
+          month: '2-digit',
+          day: 'numeric',
+        }),
+        mapsLink
+      };
+    }
+    this.setIsEditFormMode(0, false)
   }
 
   deleteLandmark = (id: number)=> {

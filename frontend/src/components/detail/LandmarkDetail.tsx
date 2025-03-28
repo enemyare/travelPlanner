@@ -1,12 +1,13 @@
 import {FC, useEffect} from "react";
 import {Slider, Text, Icon, Button} from "@gravity-ui/uikit";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import './LandmarkDetail.css'
 import {store} from "../../store/store.ts";
 import {observer} from "mobx-react-lite";
 import {ArrowLeft} from '@gravity-ui/icons';
 
 const LandmarkDetail: FC = observer(() => {
+  const navigate = useNavigate();
   const {id}= useParams()
   useEffect(()=>{
     store.setDetailId(Number(id))
@@ -17,12 +18,17 @@ const LandmarkDetail: FC = observer(() => {
     return <div>Loading...</div>
   }
 
+  const onEdit = () => {
+    store.setIsEditFormMode(Number(id), true)
+    navigate('/newlandmark')
+  }
+
   return(
     <>
       <div className={'landmark-detail'}>
         <div className={'detail-header'}>
           <Link className={'back-icon'} to={'/'}><Icon  data={ArrowLeft}/>Вернуться</Link>
-          <Button view={'outlined-info'}>Редактировать</Button>
+          <Button view={'outlined-info'} onClick={onEdit}>Редактировать</Button>
         </div>
         <div className={'description-container'}>
           <img src={landmark.image} alt="" className="landmark-detail-img"/>

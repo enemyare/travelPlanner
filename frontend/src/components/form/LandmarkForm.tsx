@@ -1,4 +1,4 @@
-import {FC} from "react";
+import {FC, useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {ILandmark} from "../../interfaces/ILandmark.ts";
 import {Button, Slider, Text, TextArea, TextInput} from "@gravity-ui/uikit";
@@ -11,7 +11,7 @@ import {Icon} from "@gravity-ui/uikit";
 
 const LandmarkForm: FC = observer(() => {
   const navigate = useNavigate();
-  const {register, handleSubmit,setValue} = useForm<ILandmark>({
+  const {register, reset, handleSubmit,setValue} = useForm<ILandmark>({
     defaultValues:{
       name: '',
       description: '',
@@ -20,10 +20,25 @@ const LandmarkForm: FC = observer(() => {
       coordinates: '',
     }
   })
+
+  useEffect(()=>{
+    if (store.isEditFormMode.isEdit){
+      const landmark = store.landmarkById(store.isEditFormMode.id)
+      if(landmark){
+        reset(landmark)
+      }
+    }
+  }, [])
+
   const onSubmit = (data: ILandmark) => {
-    store.newLandmark(data)
-    navigate('/')
-  };
+    if (!store.isEditFormMode.isEdit){
+      store.newLandmark(data)
+      navigate('/')
+    } else{
+      store.updateLandmark(data, store.isEditFormMode.id)
+      navigate('/')
+    }
+  }
 
   return (
     <>
@@ -83,7 +98,7 @@ const LandmarkForm: FC = observer(() => {
           view={'outlined-action'}
           width={'max'}
         >
-          Добавить
+          Сохранить
         </Button>
       </form>
     </>
