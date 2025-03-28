@@ -11,7 +11,7 @@ export class LandmarkService {
     const landmark = await this.prisma.landmark.findUnique({
       where: { id },
     })
-    if (!landmark) throw new NotFoundException("Достопримечательность не найдена");
+    if (!landmark) throw new NotFoundException("Достопримечательность не найдена")
     return landmark
   }
 
@@ -51,9 +51,6 @@ export class LandmarkService {
       where: { id },
       data: {
         status: updateStatusDto.status,
-        ...(updateStatusDto.status === 'Осмотрена' && {
-          viewedAt: new Date().toISOString(),
-        }),
       },
     });
   }

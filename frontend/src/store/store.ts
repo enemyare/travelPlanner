@@ -6,6 +6,7 @@ class Store{
   detailId: number = NaN
   searchQuery: string = ''
   isHideViewed: boolean = false;
+  isAdmin: boolean = false;
   copyLandmarks: Array<ILandmark> = [];
   landmarks: Array<ILandmark> = [{
     id: 1,
@@ -61,6 +62,15 @@ class Store{
   setDetailId = (id: number)=> {
     this.detailId = id;
   }
+
+  setLandmarks = (data: ILandmark[]) => {
+    this.landmarks = [...data]
+  }
+
+  setIsAdmin = (checked: boolean) => {
+    this.isAdmin = checked;
+  }
+
 
    get searchLandmarks( ) {
     return this.landmarks

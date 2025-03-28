@@ -71,7 +71,7 @@ const LandmarkForm: FC = observer(() => {
           />
         </div>
         <div>
-          <Text variant={'subheader-2'}>Введите координаты в формате 00.0000, 00.0000:</Text>
+          <Text variant={'subheader-2'}>Введите координаты в формате 00.0000,00.0000:</Text>
           <TextInput
             {...register('coordinates')}
             placeholder={'Ведите координаты'}

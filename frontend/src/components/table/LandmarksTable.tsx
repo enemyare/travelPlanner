@@ -6,7 +6,7 @@ import {
   Icon,
   Button,
   TableColumnConfig,
-  TableDataItem
+  TableDataItem, Switch, Text, Tooltip
 } from '@gravity-ui/uikit';
 import '@gravity-ui/uikit/styles/fonts.css';
 import '@gravity-ui/uikit/styles/styles.css';
@@ -16,7 +16,7 @@ import {observer} from "mobx-react-lite";
 import {store} from "../../store/store.ts";
 import {Eye, Pencil, TrashBin } from '@gravity-ui/icons';
 import {Link, useNavigate} from "react-router-dom";
-import {ILandmark} from "../../interfaces/ILandmark.ts";
+import {useQuery} from "@tanstack/react-query";
 
 const TableWithSorting = withTableSorting(Table);
 const MyTable = withTableActions(TableWithSorting);
@@ -90,27 +90,40 @@ const columns: TableColumnConfig<TableDataItem>[] = [
 
 const LandmarksTable: FC = observer(() => {
   const navigate = useNavigate()
+  const {} = useQuery({
+      queryKey: ['landmarks'],
+      queryFn: async () => {
+        try {
+          const response = await fetch('http://localhost:3000/api/landmark')
+          return await response.json();
+        } catch (err) {
+          throw err
+        }
+      },
+  })
 
-  const getRowActions = () => {
+  const getRowActions  = () => {
     return [
       {
         text: 'Редактировать',
         icon: <Icon data={Pencil} size={16} />,
         handler: () => {},
+        disabled: !store.isAdmin,
       },
       {
         text: 'Осмотрел',
         icon: <Icon data={Eye} size={16} />,
-        handler: (item:ILandmark) => {
+        handler: (item: any) => {
           store.setViewedLandmark(item.id)
         },
       },
       {
         text: 'Удалить',
         icon: <Icon data={TrashBin} size={16} />,
-        handler: (item:ILandmark) => {
+        handler: (item: any) => {
           store.deleteLandmark(item.id)
         },
+        disabled: !store.isAdmin,
       },
     ];
   };
@@ -121,13 +134,28 @@ const LandmarksTable: FC = observer(() => {
         <TextInput
           onChange={(e) => store.setSearchQuery(e.target.value)}
           placeholder="Поиск по названию или описанию"
-          style={{ marginBottom: '16px' }}
         />
-        <Button
-          view={"outlined-info"}
+        <div className={'admin-switch'}>
+          <Text>Режим администратора:</Text>
+          <Switch onUpdate={(checked)=>{store.setIsAdmin(checked)}}/>
+        </div>
+        <Tooltip
+          content="Включите режим администратора"
+          placement="top"
+          openDelay={0}
+          disabled={store.isAdmin}
         >
-          <Link to={"/newlandmark"}>Добавить достопримечательность</Link>
-        </Button>
+          <div>
+            <Button
+              disabled={!store.isAdmin}
+              view={"outlined-info"}
+              onHover
+            >
+              <Link to={"/newlandmark"}>Добавить достопримечательность</Link>
+            </Button>
+          </div>
+        </Tooltip>
+
 
         <Button
           view={"outlined-action"}
