@@ -6,6 +6,6 @@ import { LandmarkModule } from './landmark/landmark.module';
 @Module({
   imports: [LandmarkModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,],
 })
 export class AppModule {}

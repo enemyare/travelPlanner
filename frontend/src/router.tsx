@@ -14,6 +14,10 @@ export const router = createBrowserRouter([
     element: <LandmarkForm/>
   },
   {
+    path: '/updateLandmark/:id',
+    element: <LandmarkForm/>
+  },
+  {
     path: '/landmark/:id',
     element: <LandmarkDetail/>
   }

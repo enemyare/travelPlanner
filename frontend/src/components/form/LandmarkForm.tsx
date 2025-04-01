@@ -4,13 +4,14 @@ import {ILandmark} from "../../interfaces/ILandmark.ts";
 import {Button, Slider, Text, TextArea, TextInput} from "@gravity-ui/uikit";
 import {store} from "../../store/store.ts";
 import {observer} from "mobx-react-lite";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import './LandmarkForm.css'
 import {ArrowLeft} from "@gravity-ui/icons";
 import {Icon} from "@gravity-ui/uikit";
 
 const LandmarkForm: FC = observer(() => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const {id}= useParams()
   const {register, reset, handleSubmit,setValue} = useForm<ILandmark>({
     defaultValues:{
       name: '',
@@ -18,25 +19,29 @@ const LandmarkForm: FC = observer(() => {
       image: '',
       location: '',
       coordinates: '',
+      rating: 1
     }
   })
+  const numbId: number = Number(id)
 
   useEffect(()=>{
-    if (store.isEditFormMode.isEdit){
-      const landmark = store.landmarkById(store.isEditFormMode.id)
+    if (numbId){
+      const landmark = store.landmarkById(numbId)
       if(landmark){
         reset(landmark)
       }
     }
-  }, [])
+  }, [numbId, reset])
 
   const onSubmit = (data: ILandmark) => {
-    if (!store.isEditFormMode.isEdit){
-      store.newLandmark(data)
+    if (numbId){
+      store.updateLandmark(data, numbId)
       navigate('/')
     } else{
-      store.updateLandmark(data, store.isEditFormMode.id)
-      navigate('/')
+      store.newLandmark(data)
+      setTimeout(()=>{
+        navigate('/')
+      },1000)
     }
   }
 

@@ -13,7 +13,7 @@ model Landmark {
   description String
   rating      Int      @default(1)
   status      String
-  createAt    DateTime
+  createdAt   DateTime @default(now())
   location    String
   coordinates String
   image       String

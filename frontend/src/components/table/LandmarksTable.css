@@ -25,7 +25,7 @@
 .table-img{
     max-width: 100px;
     height: auto;
-    borderRadius: '4px'
+    border-radius: 4px;
 }
 .admin-switch{
     display: flex;

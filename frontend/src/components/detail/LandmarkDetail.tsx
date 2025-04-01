@@ -1,5 +1,5 @@
 import {FC, useEffect} from "react";
-import {Slider, Text, Icon, Button} from "@gravity-ui/uikit";
+import {Slider, Text, Icon, Button, Spin, Tooltip} from "@gravity-ui/uikit";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import './LandmarkDetail.css'
 import {store} from "../../store/store.ts";
@@ -7,43 +7,62 @@ import {observer} from "mobx-react-lite";
 import {ArrowLeft} from '@gravity-ui/icons';
 
 const LandmarkDetail: FC = observer(() => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const { isLoading, isAdmin, getLandmarkById} = store
   const {id}= useParams()
-  useEffect(()=>{
-    store.setDetailId(Number(id))
-  })
-  const landmark = store.detailLandmark
+  const numId: number = Number(id)
 
-  if (!landmark){
-    return <div>Loading...</div>
-  }
+  useEffect(()=>{
+    getLandmarkById(numId)
+    // setDate(detailLandmark?.createdAt
+    //   ? new Date(detailLandmark.createdAt).toLocaleDateString('ru-RU', {
+    //     day: 'numeric',
+    //     month: 'long',
+    //     year: 'numeric',
+    //     hour: 'numeric',
+    //     minute: 'numeric',
+    //   })
+    //   : 'Дата не указана')
+
+  }, [numId, getLandmarkById])
 
   const onEdit = () => {
-    store.setIsEditFormMode(Number(id), true)
-    navigate('/newlandmark')
+    navigate(`/updateLandmark/${numId}`)
   }
 
+  if (isLoading){
+    return <Spin></Spin>
+  }
   return(
     <>
       <div className={'landmark-detail'}>
         <div className={'detail-header'}>
           <Link className={'back-icon'} to={'/'}><Icon  data={ArrowLeft}/>Вернуться</Link>
-          <Button view={'outlined-info'} onClick={onEdit}>Редактировать</Button>
+          <Tooltip
+            content="Включите режим администратора"
+            placement="top"
+            openDelay={0}
+            disabled={isAdmin}
+          >
+            <div>
+              <Button view={'outlined-info'} onClick={onEdit} disabled={!isAdmin}>Редактировать</Button>
+            </div>
+          </Tooltip>
         </div>
         <div className={'description-container'}>
-          <img src={landmark.image} alt="" className="landmark-detail-img"/>
+          <img src={store.detailLandmark?.image} alt="" className="landmark-detail-img"/>
           <div className={'description-wrap'}>
-            <Text variant={'subheader-2'}>Имя достопримечательности: {landmark.name}</Text>
+            <Text variant={'subheader-2'}>Имя достопримечательности: {store.detailLandmark?.name}</Text>
             <div className={'description'}>
               <Text variant={'subheader-2'}>Описание достопримечательности:</Text>
-              <Text wordBreak={'break-all'} > {landmark.description}</Text>
+              <Text wordBreak={'break-all'} > {store.detailLandmark?.description}</Text>
             </div>
           </div>
         </div>
         <div>
-          <Text variant={'subheader-2'}>Рейтинг достопримечательности: {landmark.rating}</Text>
+          <Text variant={'subheader-2'}>Рейтинг достопримечательности: {store.detailLandmark?.rating}</Text>
           <Slider
-            value={landmark.rating}
+            value={store.detailLandmark?.rating}
             disabled={true}
             min={1}
             max={5}
@@ -51,10 +70,17 @@ const LandmarkDetail: FC = observer(() => {
             size={'s'}
           />
         </div>
-        <Text variant={'subheader-2'}>Локация: {landmark.location}</Text>
-        <Text variant={'subheader-2'}>Достопримечательность на картах: <a href={landmark.mapsLink}>{landmark.mapsLink}</a></Text>
-        <Text variant={'subheader-2'}>Координаты: {landmark.coordinates}</Text>
-        <Text variant={'subheader-2'}>Дата создания: {landmark.createdAt}</Text>
+        <Text variant={'subheader-2'}>Локация: {store.detailLandmark?.location}</Text>
+        <Text variant={'subheader-2'}>Достопримечательность на картах: <a href={store.detailLandmark?.mapsLink}>{store.detailLandmark?.mapsLink}</a></Text>
+        <Text variant={'subheader-2'}>Координаты: {store.detailLandmark?.coordinates}</Text>
+        <Text variant={'subheader-2'}>Дата создания: {new Date(String(store.detailLandmark?.createdAt)).toLocaleDateString('ru-RU',
+          {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+          })}</Text>
       </div>
     </>
   )
