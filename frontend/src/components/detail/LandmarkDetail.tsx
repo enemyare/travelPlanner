@@ -5,37 +5,33 @@ import './LandmarkDetail.css'
 import {store} from "../../store/store.ts";
 import {observer} from "mobx-react-lite";
 import {ArrowLeft} from '@gravity-ui/icons';
+import ErrorComponent from "../error/ErrorComponent.tsx";
 
 const LandmarkDetail: FC = observer(() => {
   const navigate = useNavigate()
-  const { isLoading, isAdmin, getLandmarkById} = store
+  const { isLoading, isAdmin, apiError, getLandmarkById} = store
   const {id}= useParams()
   const numId: number = Number(id)
 
   useEffect(()=>{
     getLandmarkById(numId)
-    // setDate(detailLandmark?.createdAt
-    //   ? new Date(detailLandmark.createdAt).toLocaleDateString('ru-RU', {
-    //     day: 'numeric',
-    //     month: 'long',
-    //     year: 'numeric',
-    //     hour: 'numeric',
-    //     minute: 'numeric',
-    //   })
-    //   : 'Дата не указана')
-
   }, [numId, getLandmarkById])
 
   const onEdit = () => {
     navigate(`/updateLandmark/${numId}`)
   }
 
+  if (apiError.message){
+    return <ErrorComponent/>
+  }
+
   if (isLoading){
     return <Spin></Spin>
   }
-  return(
+
+  return (
     <>
-      <div className={'landmark-detail'}>
+    <div className={'landmark-detail'}>
         <div className={'detail-header'}>
           <Link className={'back-icon'} to={'/'}><Icon  data={ArrowLeft}/>Вернуться</Link>
           <Tooltip

@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction} from "mobx";
 import {ILandmark} from "../interfaces/ILandmark.ts";
 import ApiService from "../api/apiService.ts";
+import ErrorApi from "../interfaces/ErrorApi.ts";
 
 class Store{
   apiService: ApiService
@@ -9,9 +10,11 @@ class Store{
   isHideViewed: boolean = false
   isAdmin: boolean = false
   filteredLandmarks: Array<ILandmark> = [];
-  landmarks: Array<ILandmark> = []
+  landmarks:  ILandmark [] = []
   detailLandmark!: ILandmark
-  error: unknown | string = ''
+  apiError: ErrorApi = {
+    message: ""
+  }
 
   constructor(){
     makeAutoObservable(this)
@@ -62,8 +65,7 @@ class Store{
         this.isLoading = false
       })
     }catch(err){
-      this.error = err
-      throw new Error()
+      this.apiError = err as ErrorApi
     }
   }
 
@@ -76,22 +78,20 @@ class Store{
         this.isLoading = false
       })
     }catch(err){
-      this.error = err
-      throw new Error()
+      this.apiError = err as ErrorApi
     }
   }
 
   newLandmark = async (data: ILandmark)=>{
     try {
       this.isLoading = true
-      const res = await this.apiService.post(data)
+      const res: ILandmark [] = await this.apiService.post(data)
       runInAction(()=> {
         this.landmarks = res
         this.isLoading = false
       })
     }catch(err){
-      this.error = err
-      throw new Error()
+      this.apiError = err as ErrorApi
     }
   }
 
@@ -104,8 +104,7 @@ class Store{
         this.isLoading = false
       })
     }catch(err){
-      this.error = err
-      throw new Error()
+      this.apiError = err as ErrorApi
     }
   }
 
@@ -118,22 +117,20 @@ class Store{
         this.isLoading = false
       })
     }catch(err){
-      this.error = err
-      throw new Error()
+      this.apiError = err as ErrorApi
     }
   }
 
   getLandmarkById = async (id: number)=> {
     this.isLoading = true
     try {
-      const res = await this.apiService.getById(id)
+      const res: ILandmark = await this.apiService.getById(id)
       runInAction(()=> {
         this.detailLandmark = res
         this.isLoading = false
       })
     }catch(err){
-      this.error = err
-      throw new Error()
+      this.apiError = err as ErrorApi
     }
   }
 }

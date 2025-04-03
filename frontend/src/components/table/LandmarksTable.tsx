@@ -16,6 +16,7 @@ import {observer} from "mobx-react-lite";
 import {store} from "../../store/store.ts";
 import {Eye, Pencil, TrashBin } from '@gravity-ui/icons';
 import {Link, useNavigate} from "react-router-dom";
+import ErrorComponent from "../error/ErrorComponent.tsx";
 
 const TableWithSorting = withTableSorting(Table);
 const MyTable = withTableActions(TableWithSorting);
@@ -110,7 +111,7 @@ const columns: TableColumnConfig<TableDataItem>[] = [
 
 const LandmarksTable: FC = observer(() => {
   const navigate = useNavigate()
-  const {    isLoading, isAdmin,  isHideViewed,
+  const {    isLoading, isAdmin,  isHideViewed, apiError,
     getAllLandmark, setSearchQuery, setIsAdmin, deleteLandmark, setViewedLandmark, hideViewedLandmarks} = store
 
   useEffect(()=> {
@@ -144,6 +145,10 @@ const LandmarksTable: FC = observer(() => {
       },
     ];
   };
+
+  if (apiError.message){
+    return <ErrorComponent />
+  }
 
   if (isLoading){
     return <Spin></Spin>

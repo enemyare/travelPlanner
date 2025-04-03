@@ -1,17 +1,19 @@
 import {FC, useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {ILandmark} from "../../interfaces/ILandmark.ts";
-import {Button, Slider, Text, TextArea, TextInput} from "@gravity-ui/uikit";
+import {Button, Slider, Spin, Text, TextArea, TextInput} from "@gravity-ui/uikit";
 import {store} from "../../store/store.ts";
 import {observer} from "mobx-react-lite";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import './LandmarkForm.css'
 import {ArrowLeft} from "@gravity-ui/icons";
 import {Icon} from "@gravity-ui/uikit";
+import ErrorComponent from "../error/ErrorComponent.tsx";
 
 const LandmarkForm: FC = observer(() => {
   const navigate = useNavigate()
   const {id}= useParams()
+  const {landmarkById, updateLandmark, newLandmark, isLoading, apiError} = store
   const {register, reset, handleSubmit,setValue} = useForm<ILandmark>({
     defaultValues:{
       name: '',
@@ -26,7 +28,7 @@ const LandmarkForm: FC = observer(() => {
 
   useEffect(()=>{
     if (numbId){
-      const landmark = store.landmarkById(numbId)
+      const landmark = landmarkById(numbId)
       if(landmark){
         reset(landmark)
       }
@@ -35,14 +37,22 @@ const LandmarkForm: FC = observer(() => {
 
   const onSubmit = (data: ILandmark) => {
     if (numbId){
-      store.updateLandmark(data, numbId)
+      updateLandmark(data, numbId)
       navigate('/')
     } else{
-      store.newLandmark(data)
+      newLandmark(data)
       setTimeout(()=>{
         navigate('/')
       },1000)
     }
+  }
+
+  if (apiError.message){
+    return <ErrorComponent/>
+  }
+
+  if (isLoading){
+    return <Spin></Spin>
   }
 
   return (

@@ -7,7 +7,9 @@ import LandmarkDetail from "./components/detail/LandmarkDetail.tsx";
 export const router = createBrowserRouter([
   {
     path: '/',
-    element:  <App/>
+    element:
+      <App/>
+      ,
   },
   {
     path: '/newlandmark',
