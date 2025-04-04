@@ -5,7 +5,7 @@ import './LandmarkDetail.css'
 import {store} from "../../store/store.ts";
 import {observer} from "mobx-react-lite";
 import {ArrowLeft} from '@gravity-ui/icons';
-import ErrorComponent from "../error/ErrorComponent.tsx";
+import ErrorComponent from "../../components/error/ErrorComponent.tsx";
 
 const LandmarkDetail: FC = observer(() => {
   const navigate = useNavigate()

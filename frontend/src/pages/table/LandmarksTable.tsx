@@ -16,7 +16,7 @@ import {observer} from "mobx-react-lite";
 import {store} from "../../store/store.ts";
 import {Eye, Pencil, TrashBin } from '@gravity-ui/icons';
 import {Link, useNavigate} from "react-router-dom";
-import ErrorComponent from "../error/ErrorComponent.tsx";
+import ErrorComponent from "../../components/error/ErrorComponent.tsx";
 
 const TableWithSorting = withTableSorting(Table);
 const MyTable = withTableActions(TableWithSorting);

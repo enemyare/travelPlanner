@@ -8,12 +8,12 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import './LandmarkForm.css'
 import {ArrowLeft} from "@gravity-ui/icons";
 import {Icon} from "@gravity-ui/uikit";
-import ErrorComponent from "../error/ErrorComponent.tsx";
+import ErrorComponent from "../../components/error/ErrorComponent.tsx";
 
 const LandmarkForm: FC = observer(() => {
   const navigate = useNavigate()
   const {id}= useParams()
-  const {landmarkById, updateLandmark, newLandmark, isLoading, apiError} = store
+  const {getLandmarkById, updateLandmark, newLandmark, isLoading, apiError, detailLandmark} = store
   const {register, reset, handleSubmit,setValue} = useForm<ILandmark>({
     defaultValues:{
       name: '',
@@ -28,12 +28,13 @@ const LandmarkForm: FC = observer(() => {
 
   useEffect(()=>{
     if (numbId){
-      const landmark = landmarkById(numbId)
+      getLandmarkById(Number(id))
+      const landmark = detailLandmark
       if(landmark){
         reset(landmark)
       }
     }
-  }, [landmarkById, numbId, reset])
+  }, [getLandmarkById, id, reset, numbId])
 
   const onSubmit = (data: ILandmark) => {
     if (numbId){

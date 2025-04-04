@@ -4,7 +4,7 @@ import ApiService from "../api/apiService.ts";
 import ErrorApi from "../interfaces/ErrorApi.ts";
 
 class Store{
-  apiService: ApiService
+  private apiService: ApiService
   isLoading:boolean = false
   searchQuery: string = ''
   isHideViewed: boolean = false
@@ -19,10 +19,6 @@ class Store{
   constructor(){
     makeAutoObservable(this)
     this.apiService = new ApiService()
-  }
-
-  landmarkById = (id: number) => {
-    return this.landmarks.find(item => item.id === id);
   }
 
   setSearchQuery = (query:string)=> {
@@ -45,6 +41,17 @@ class Store{
     }else return this.landmarks
  }
 
+  hideViewedLandmarks = () => {
+    if (!this.isHideViewed) {
+      this.filteredLandmarks = this.landmarks
+      this.landmarks = this.landmarks.filter((item) => item.status !== 'Осмотрена')
+      this.isHideViewed = true
+    }else{
+      this.landmarks = this.filteredLandmarks
+      this.isHideViewed = false
+    }
+  }
+
   requestWrapper = async <T>(asyncFn: Promise<T>, setState: (res: T) => void)=> {
     try {
       this.isLoading = true
@@ -58,28 +65,8 @@ class Store{
     }
   }
 
-  hideViewedLandmarks = () => {
-    if (!this.isHideViewed) {
-      this.filteredLandmarks = this.landmarks
-      this.landmarks = this.landmarks.filter((item) => item.status !== 'Осмотрена')
-      this.isHideViewed = true
-    }else{
-      this.landmarks = this.filteredLandmarks
-      this.isHideViewed = false
-    }
-  }
-
   setViewedLandmark = async (id: number) => {
-    try {
-      this.isLoading = true
-      const res = await this.apiService.updateViewed(id)
-      runInAction(() => {
-        this.landmarks = res
-        this.isLoading = false
-      })
-    }catch(err){
-      this.apiError = err as ErrorApi
-    }
+    await this.requestWrapper(this.apiService.updateViewed(id), res => this.landmarks = res)
   }
 
   getAllLandmark = async () => {
