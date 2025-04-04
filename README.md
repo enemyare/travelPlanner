@@ -59,5 +59,5 @@ nest start
  - GET /api/landmark/{id} — получение конкретной достопримечательности по ID
  - POST /api/landmark — создание новой достопримечательности
  - DELETE /api/landmark/{id} — удаление достопримечательности
- - POST /api/landmark/{id} — обновление существующей достопримечательности 
+ - PATCH /api/landmark/{id} — обновление существующей достопримечательности 
  - GET /api/landmark/search — поиск по названию и описанию
