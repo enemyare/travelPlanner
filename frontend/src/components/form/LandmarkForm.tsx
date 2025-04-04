@@ -33,7 +33,7 @@ const LandmarkForm: FC = observer(() => {
         reset(landmark)
       }
     }
-  }, [numbId, reset])
+  }, [landmarkById, numbId, reset])
 
   const onSubmit = (data: ILandmark) => {
     if (numbId){
@@ -41,9 +41,7 @@ const LandmarkForm: FC = observer(() => {
       navigate('/')
     } else{
       newLandmark(data)
-      setTimeout(()=>{
-        navigate('/')
-      },1000)
+      navigate('/')
     }
   }
 

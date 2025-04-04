@@ -45,6 +45,19 @@ class Store{
     }else return this.landmarks
  }
 
+  requestWrapper = async <T>(asyncFn: Promise<T>, setState: (res: T) => void)=> {
+    try {
+      this.isLoading = true
+      const res: T = await asyncFn
+      runInAction(()=> {
+        setState(res)
+        this.isLoading = false
+      })
+    }catch(err){
+      this.apiError = err as ErrorApi
+    }
+  }
+
   hideViewedLandmarks = () => {
     if (!this.isHideViewed) {
       this.filteredLandmarks = this.landmarks
@@ -70,68 +83,23 @@ class Store{
   }
 
   getAllLandmark = async () => {
-    try {
-      this.isLoading = true
-      const res:ILandmark [] = await this.apiService.getAll()
-      runInAction(()=> {
-        this.landmarks = res
-        this.isLoading = false
-      })
-    }catch(err){
-      this.apiError = err as ErrorApi
-    }
+    await this.requestWrapper(this.apiService.getAll(), (res) => this.landmarks = res)
   }
 
   newLandmark = async (data: ILandmark)=>{
-    try {
-      this.isLoading = true
-      const res: ILandmark [] = await this.apiService.post(data)
-      runInAction(()=> {
-        this.landmarks = res
-        this.isLoading = false
-      })
-    }catch(err){
-      this.apiError = err as ErrorApi
-    }
+    await this.requestWrapper(this.apiService.post(data), (res) => this.landmarks = res)
   }
 
   updateLandmark = async (data: ILandmark, id: number) => {
-    try {
-      this.isLoading = true
-      const res = await this.apiService.update(id, data)
-      runInAction(()=> {
-        this.landmarks = res
-        this.isLoading = false
-      })
-    }catch(err){
-      this.apiError = err as ErrorApi
-    }
+    await this.requestWrapper(this.apiService.update(id, data), res => this.landmarks = res)
   }
 
   deleteLandmark = async (id: number)=> {
-    try {
-      this.isLoading = true
-      const res = await this.apiService.delete(id)
-      runInAction(()=> {
-        this.landmarks = res
-        this.isLoading = false
-      })
-    }catch(err){
-      this.apiError = err as ErrorApi
-    }
+    await this.requestWrapper(this.apiService.delete(id), res => this.landmarks = res)
   }
 
   getLandmarkById = async (id: number)=> {
-    this.isLoading = true
-    try {
-      const res: ILandmark = await this.apiService.getById(id)
-      runInAction(()=> {
-        this.detailLandmark = res
-        this.isLoading = false
-      })
-    }catch(err){
-      this.apiError = err as ErrorApi
-    }
+    await this.requestWrapper(this.apiService.getById(id), res => this.detailLandmark = res)
   }
 }
 
