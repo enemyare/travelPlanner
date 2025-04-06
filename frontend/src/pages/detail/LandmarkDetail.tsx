@@ -1,11 +1,12 @@
 import {FC, useEffect} from "react";
-import {Slider, Text, Icon, Button, Spin, Tooltip} from "@gravity-ui/uikit";
+import {Slider, Text, Icon, Button, Tooltip} from "@gravity-ui/uikit";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import './LandmarkDetail.css'
 import {store} from "../../store/store.ts";
 import {observer} from "mobx-react-lite";
 import {ArrowLeft} from '@gravity-ui/icons';
 import ErrorComponent from "../../components/error/ErrorComponent.tsx";
+import LoadingComponent from "../../components/loading/LoadingComponent.tsx";
 
 const LandmarkDetail: FC = observer(() => {
   const navigate = useNavigate()
@@ -26,7 +27,7 @@ const LandmarkDetail: FC = observer(() => {
   }
 
   if (isLoading){
-    return <Spin></Spin>
+    return <LoadingComponent/>
   }
 
   return (

@@ -6,7 +6,7 @@ import {
   Icon,
   Button,
   TableColumnConfig,
-  TableDataItem, Switch, Text, Tooltip, Spin, TableActionConfig
+  TableDataItem, Switch, Text, Tooltip, TableActionConfig
 } from '@gravity-ui/uikit';
 import '@gravity-ui/uikit/styles/fonts.css';
 import '@gravity-ui/uikit/styles/styles.css';
@@ -17,6 +17,7 @@ import {store} from "../../store/store.ts";
 import {Eye, Pencil, TrashBin } from '@gravity-ui/icons';
 import {Link, useNavigate} from "react-router-dom";
 import ErrorComponent from "../../components/error/ErrorComponent.tsx";
+import LoadingComponent from "../../components/loading/LoadingComponent.tsx";
 
 const TableWithSorting = withTableSorting(Table);
 const MyTable = withTableActions(TableWithSorting);
@@ -151,7 +152,7 @@ const LandmarksTable: FC = observer(() => {
   }
 
   if (isLoading){
-    return <Spin></Spin>
+    return <LoadingComponent/>
   }
 
   return (

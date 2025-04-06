@@ -1,7 +1,7 @@
 import {FC, useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {ILandmark} from "../../interfaces/ILandmark.ts";
-import {Button, Slider, Spin, Text, TextArea, TextInput} from "@gravity-ui/uikit";
+import {Button, Slider, Text, TextArea, TextInput} from "@gravity-ui/uikit";
 import {store} from "../../store/store.ts";
 import {observer} from "mobx-react-lite";
 import {Link, useNavigate, useParams} from "react-router-dom";
@@ -9,6 +9,7 @@ import './LandmarkForm.css'
 import {ArrowLeft} from "@gravity-ui/icons";
 import {Icon} from "@gravity-ui/uikit";
 import ErrorComponent from "../../components/error/ErrorComponent.tsx";
+import LoadingComponent from "../../components/loading/LoadingComponent.tsx";
 
 const LandmarkForm: FC = observer(() => {
   const navigate = useNavigate()
@@ -51,7 +52,7 @@ const LandmarkForm: FC = observer(() => {
   }
 
   if (isLoading){
-    return <Spin></Spin>
+    return <LoadingComponent/>
   }
 
   return (

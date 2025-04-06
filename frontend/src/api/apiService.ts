@@ -1,6 +1,5 @@
 import {ILandmark} from "../interfaces/ILandmark.ts";
 
-
 const APIURL = "http://localhost:3000/api"
 
 class ApiService{
