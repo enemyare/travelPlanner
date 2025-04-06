@@ -27,17 +27,20 @@
 
 ## Установка и запуск 
 #### Запуск frontend
-1. Клонировать репозиторий:
+1. Клонировать репозиторий и открыть папку проекта:
 ``` 
 git clone https://github.com/enemyare/travelPlanner.git
 cd travelPlanner
+```
+2. Открыть frontend
+``` 
 cd frontend
 ```
-2. Установить зависимости:
+3. Установить зависимости:
 ```
 npm install
 ```
-3. Запустить:
+4. Запустить:
 ```
 npm run dev
 ```
@@ -49,7 +52,15 @@ cd backend
 npm install
 ```
 2. Добавить в .env данные для подключения к базе данных
-3. Запустить проект
+```
+DATABASE_URL="postgresql://youruser:password@localhost:5432/yourdb?schema=public"
+```
+3. Запустить генерацию prisma client и произвести миграцию
+```
+prisma generate
+npx prisma migrate dev --name "description"
+```
+4. Запустить проект
 ```
 nest start
 ```

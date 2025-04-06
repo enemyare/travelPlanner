@@ -1,13 +1,14 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma.service";
-import { UpdateStatusDto } from "./dto/update-statusLandmark.dto";
 import { CreateLandmarkDto } from "./dto/create-landmark.dto";
+import { UpdateLandmarkDto } from "./dto/update-landmark.dto";
 
 @Injectable()
 export class LandmarkService {
+  private readonly logger = new Logger(LandmarkService.name)
   constructor(private prisma: PrismaService) {}
 
-   async getById(id: number) {
+  async getById(id: number) {
     const landmark = await this.prisma.landmark.findUnique({
       where: { id },
     })
@@ -20,7 +21,6 @@ export class LandmarkService {
       ...createLandmarkDto,
       mapsLink: `https://maps.google.com/?q=${createLandmarkDto.coordinates}`,
       status: 'В планах',
-      createAt: new Date().toISOString()
     }
     return this.prisma.landmark.create({
       data: landmark
@@ -28,7 +28,10 @@ export class LandmarkService {
   }
 
   async findAll() {
-    return this.prisma.landmark.findMany()
+    return this.prisma.landmark.findMany({
+        orderBy: { id: 'asc' }
+      }
+    )
   }
 
   async findOne(id: number) {
@@ -36,31 +39,29 @@ export class LandmarkService {
     return landmark
   }
 
-  async update(id: number) {
-    return this.prisma.landmark.update({
+  async updateViewed(id: number) {
+    await this.prisma.landmark.update({
       where: { id },
       data: {
         status: 'Осмотрена'
       },
-    });
+    })
+    return this.findAll()
   }
 
-  async updateStatus(id: number, updateStatusDto: UpdateStatusDto) {
-    await this.findOne(id)
-    return this.prisma.landmark.update({
+  async update(id: number, updateLandmark: UpdateLandmarkDto) {
+    await this.prisma.landmark.update({
       where: { id },
-      data: {
-        status: updateStatusDto.status,
-      },
-    });
+      data: updateLandmark,
+    })
+    return this.findAll()
   }
 
   async remove(id: number) {
     await this.findOne(id)
-    return this.prisma.landmark.delete({
+    await this.prisma.landmark.delete({
       where: { id },
-    });
+    })
+    return this.findAll()
   }
-
-
 }

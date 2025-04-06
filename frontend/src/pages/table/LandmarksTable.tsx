@@ -6,17 +6,18 @@ import {
   Icon,
   Button,
   TableColumnConfig,
-  TableDataItem, Switch, Text, Tooltip
+  TableDataItem, Switch, Text, Tooltip, TableActionConfig
 } from '@gravity-ui/uikit';
 import '@gravity-ui/uikit/styles/fonts.css';
 import '@gravity-ui/uikit/styles/styles.css';
 import './LandmarksTable.css';
-import {FC} from "react";
+import {FC, useEffect} from "react";
 import {observer} from "mobx-react-lite";
 import {store} from "../../store/store.ts";
 import {Eye, Pencil, TrashBin } from '@gravity-ui/icons';
 import {Link, useNavigate} from "react-router-dom";
-import {useQuery} from "@tanstack/react-query";
+import ErrorComponent from "../../components/error/ErrorComponent.tsx";
+import LoadingComponent from "../../components/loading/LoadingComponent.tsx";
 
 const TableWithSorting = withTableSorting(Table);
 const MyTable = withTableActions(TableWithSorting);
@@ -43,10 +44,26 @@ const columns: TableColumnConfig<TableDataItem>[] = [
   {
     id: 'createdAt',
     name: 'Добавлено',
+    align: "center",
+    meta: {
+      sort: true
+    },
+    template: (item) => (
+      <div>
+        {new Date(item.createdAt).toLocaleDateString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+        })}
+      </div>
+    )
   },
   {
     id: 'rating',
     name: 'Рейтинг',
+    align: "center",
     meta: {
       sort: true
     }
@@ -54,6 +71,7 @@ const columns: TableColumnConfig<TableDataItem>[] = [
   {
     id: 'image',
     name: 'Фото',
+    align: "center",
     template: (item ) => (
       item.image ?
       <img
@@ -66,15 +84,18 @@ const columns: TableColumnConfig<TableDataItem>[] = [
   },
   {
     id: 'location',
+    align: "center",
     name: 'Местоположение',
   },
   {
     id: 'coordinates',
+    align: "center",
     name: 'Координаты',
   },
   {
     id: 'mapsLink',
     name: 'Ссылка на карту',
+    align: "center",
     template: (item) => (
       <a href={item.mapsLink} target="_blank" rel="noopener noreferrer">
         Открыть карту
@@ -84,72 +105,80 @@ const columns: TableColumnConfig<TableDataItem>[] = [
   {
     id: 'status',
     name: 'Статус',
+    align: "center",
   },
 ];
 
 
 const LandmarksTable: FC = observer(() => {
   const navigate = useNavigate()
-  const {} = useQuery({
-      queryKey: ['landmarks'],
-      queryFn: async () => {
-        try {
-          const response = await fetch('http://localhost:3000/api/landmark')
-          return await response.json();
-        } catch (err) {
-          throw err
-        }
-      },
-  })
+  const {    isLoading, isAdmin,  isHideViewed, apiError,
+    getAllLandmark, setSearchQuery, setIsAdmin, deleteLandmark, setViewedLandmark, hideViewedLandmarks} = store
 
-  const getRowActions  = () => {
+  useEffect(()=> {
+    getAllLandmark()
+  }, [getAllLandmark, deleteLandmark])
+
+  const getRowActions  = (): TableActionConfig<TableDataItem> [] => {
     return [
       {
         text: 'Редактировать',
         icon: <Icon data={Pencil} size={16} />,
-        handler: () => {},
-        disabled: !store.isAdmin,
+        handler: (item) => {
+          navigate(`/updateLandmark/${item.id}`)
+        },
+        disabled: !isAdmin,
       },
       {
         text: 'Осмотрел',
         icon: <Icon data={Eye} size={16} />,
-        handler: (item: any) => {
-          store.setViewedLandmark(item.id)
+        handler: (item ) => {
+          setViewedLandmark(item.id)
         },
       },
       {
         text: 'Удалить',
         icon: <Icon data={TrashBin} size={16} />,
-        handler: (item: any) => {
-          store.deleteLandmark(item.id)
+        handler: (item) => {
+           deleteLandmark(item.id)
         },
-        disabled: !store.isAdmin,
+        disabled: !isAdmin,
       },
     ];
   };
 
+  if (apiError.message){
+    return <ErrorComponent />
+  }
+
+  if (isLoading){
+    return <LoadingComponent/>
+  }
+
   return (
     <>
+      <h2>Кол-во достопримечательностей: {store.amount}</h2>
       <div className="search-container">
         <TextInput
-          onChange={(e) => store.setSearchQuery(e.target.value)}
+          onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Поиск по названию или описанию"
         />
         <div className={'admin-switch'}>
           <Text>Режим администратора:</Text>
-          <Switch onUpdate={(checked)=>{store.setIsAdmin(checked)}}/>
+          <Switch checked={isAdmin} onUpdate={(checked) => {
+            setIsAdmin(checked)
+          }}/>
         </div>
         <Tooltip
           content="Включите режим администратора"
           placement="top"
           openDelay={0}
-          disabled={store.isAdmin}
+          disabled={isAdmin}
         >
           <div>
             <Button
-              disabled={!store.isAdmin}
+              disabled={!isAdmin}
               view={"outlined-info"}
-              onHover
             >
               <Link to={"/newlandmark"}>Добавить достопримечательность</Link>
             </Button>
@@ -159,11 +188,11 @@ const LandmarksTable: FC = observer(() => {
 
         <Button
           view={"outlined-action"}
-          onClick={() => store.hideViewedLandmarks()}
+          onClick={() => hideViewedLandmarks()}
           className={"hide-btn"}
         >
           {
-            store.isHideViewed ? "Показать все": " Скрыть осмотренные"
+             isHideViewed ? "Показать все" : " Скрыть осмотренные"
           }
         </Button>
       </div>
@@ -171,7 +200,7 @@ const LandmarksTable: FC = observer(() => {
         data={store.searchLandmarks}
         columns={columns}
         getRowActions={getRowActions}
-        rowActionsSize = {'l'}
+        rowActionsSize={'l'}
         emptyMessage="Достопримечательности не найдены"
         className={"table"}
         onRowClick={(item) => {

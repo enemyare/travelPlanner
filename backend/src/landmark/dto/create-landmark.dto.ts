@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, IsUrl } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateLandmarkDto {
   @IsString()
@@ -13,7 +13,7 @@ export class CreateLandmarkDto {
   @IsNotEmpty()
   rating: number;
 
-  @IsUrl()
+  @IsString()
   @IsNotEmpty()
   image: string;
 
