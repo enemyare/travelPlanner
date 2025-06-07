@@ -147,12 +147,12 @@ const LandmarksTable: FC = observer(() => {
     ];
   };
 
-  if (apiError.message){
-    return <ErrorComponent />
-  }
+   if (apiError.message){
+     return <div className={"error-container"} ><ErrorComponent /></div>
+   }
 
   if (isLoading){
-    return <LoadingComponent/>
+    return <div className={"loading-container"}><LoadingComponent/></div>
   }
 
   return (
@@ -196,6 +196,9 @@ const LandmarksTable: FC = observer(() => {
           }
         </Button>
       </div>
+      {
+
+      }
       <MyTable
         data={store.searchLandmarks}
         columns={columns}

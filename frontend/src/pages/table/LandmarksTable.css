@@ -33,3 +33,15 @@
     align-items: center;
     gap: 0.5rem;
 }
+
+.error-container{
+    position: absolute;
+    right: 47%;
+    top: 47%;
+}
+
+.loading-container{
+    position: absolute;
+    right: 50%;
+    top: 50%;
+}

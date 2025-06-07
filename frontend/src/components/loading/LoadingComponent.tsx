@@ -5,7 +5,7 @@ import {Spin} from "@gravity-ui/uikit";
 const LoadingComponent: FC = () => {
   return (
     <>
-      <div>
+      <div className={"loading-container"}>
         <Spin/>
       </div>
     </>
