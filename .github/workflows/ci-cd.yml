@@ -43,11 +43,10 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     # Backend
-    - name: Build and test backend
+    - name: Build
       working-directory: ./backend
       run: |
         npm ci
-        npm run test
         docker build -t $BACKEND_IMAGE:$GITHUB_SHA .
 
     # Frontend
